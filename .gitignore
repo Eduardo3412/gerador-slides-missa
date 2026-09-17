@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Ambiente virtual
+venv/
+.venv/
+
+# VS Code
+.vscode/
+
+# Variáveis e senhas
+.env
+
+# Arquivos temporários
+*.tmp
+
+# PowerPoint gerados
+slides_gerados/

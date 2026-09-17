@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Gerador de Slides para Missa</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <main class="container">
+      <!-- CABEÇALHO -->
+
+      <header>
+        <h1>⛪ Gerador de Slides para Missa</h1>
+
+        <p>
+          Monte os cantos, respostas e textos da celebração e gere uma única
+          apresentação.
+        </p>
+      </header>
+
+      <!-- NOME DA APRESENTAÇÃO -->
+
+      <section class="configuracao-apresentacao">
+        <label for="nome-arquivo"> Nome da apresentação </label>
+
+        <input
+          type="text"
+          id="nome-arquivo"
+          placeholder="Ex.: Missa Domingo 20-09-2026"
+        />
+      </section>
+
+      <!-- ÁREA PRINCIPAL -->
+
+      <div class="area-principal">
+        <!-- LADO ESQUERDO -->
+
+        <div class="painel-formulario">
+          <section class="formulario">
+            <label for="momento"> Momento da Missa </label>
+
+            <select id="momento">
+              <option value="Entrada">Entrada</option>
+
+              <option value="Ato Penitencial">Ato Penitencial</option>
+
+              <option value="Glória">Glória</option>
+
+              <option value="Salmo">Salmo</option>
+
+              <option value="Aclamação ao Evangelho">
+                Aclamação ao Evangelho
+              </option>
+
+              <option value="Preces">Preces</option>
+
+              <option value="Ofertório">Ofertório</option>
+
+              <option value="Oração Eucarística">Oração Eucarística</option>
+
+              <option value="Santo">Santo</option>
+
+              <option value="Cordeiro de Deus">Cordeiro de Deus</option>
+
+              <option value="Comunhão">Comunhão</option>
+
+              <option value="Final">Final</option>
+            </select>
+          </section>
+
+          <!-- LETRA / RESPOSTAS -->
+
+          <section class="formulario">
+            <label for="letra"> Letra / Respostas </label>
+
+            <textarea
+              id="letra"
+              rows="14"
+              placeholder="Digite ou cole aqui a letra ou as respostas...
+
+Use uma linha vazia para separar os blocos."
+            ></textarea>
+          </section>
+
+          <!-- ADICIONAR -->
+
+          <button id="adicionar" type="button">
+            + Adicionar à apresentação
+          </button>
+        </div>
+
+        <button
+          id="cancelar-edicao"
+          type="button"
+          class="botao-cancelar"
+          style="display: none;"
+        >
+          Cancelar edição
+        </button>
+
+        <!-- LADO DIREITO -->
+
+        <div class="painel-preview">
+        
+<div class="cabecalho-preview">
+
+    <div>
+
+        <h2>Pré-visualização</h2>
+
+        <span id="momento-preview">
+            Conteúdo atual
+        </span>
+
+    </div>
+
+</div>
+
+          <div id="preview-slide" class="preview-slide">
+            <p id="preview-texto">Digite o conteúdo para visualizar</p>
+          </div>
+
+          <!-- CONTROLES DO PREVIEW -->
+
+          <div class="controles-preview">
+            <button id="anterior" class="botao-preview" type="button">◀</button>
+
+            <span id="contador"> 0 / 0 </span>
+
+            <button id="proximo" class="botao-preview" type="button">▶</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ITENS DA APRESENTAÇÃO -->
+
+      <section class="secao-itens">
+        <h2>Apresentação Atual</h2>
+
+        <p class="descricao-secao">
+          Os momentos adicionados aparecerão abaixo na ordem da apresentação.
+        </p>
+
+        <div id="lista-momentos">
+          <div class="lista-vazia">Nenhum momento adicionado ainda.</div>
+        </div>
+      </section>
+
+      <!-- CONFIGURAÇÕES -->
+
+      <section class="configuracoes">
+        <h2>Configurações</h2>
+
+        <label class="opcao-checkbox">
+          <input type="checkbox" id="slide-preto" checked />
+          Adicionar slide preto após cada item
+        </label>
+      </section>
+
+      <!-- AÇÕES FINAIS -->
+      <section class="acoes-finais">
+
+        <button id="revisar" class="botao-revisar" type="button">
+        👁 Revisar apresentação completa
+        </button>
+
+        <button id="gerar" class="botao-gerar" type="button">
+          Gerar PowerPoint Completo
+        </button>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
