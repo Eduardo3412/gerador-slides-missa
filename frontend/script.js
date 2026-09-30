@@ -23,6 +23,8 @@ const campoSlidePreto = document.getElementById("slide-preto");
 
 const botaoCancelarEdicao = document.getElementById("cancelar-edicao");
 
+const barraMomentos = document.getElementById("barra-momentos");
+
 // Guarda todos os momentos adicionados à apresentação
 let momentosAdicionados = [];
 
@@ -41,7 +43,8 @@ let informacoesSlidesPreview = [];
 // DIVISÃO AUTOMÁTICA DOS SLIDES
 function dividirBlocosAutomaticamente(texto) {
   const blocos = texto
-    .split(/\n\s*\n/)
+    .trim()
+    .split(/\r?\n\s*\r?\n/)
     .map((bloco) => bloco.trim())
     .filter((bloco) => bloco !== "");
 
@@ -49,7 +52,7 @@ function dividirBlocosAutomaticamente(texto) {
 
   blocos.forEach((bloco) => {
     const linhas = bloco
-      .split("\n")
+      .split(/\r?\n/)
       .map((linha) => linha.trim())
       .filter((linha) => linha !== "");
 
@@ -60,7 +63,6 @@ function dividirBlocosAutomaticamente(texto) {
       slides.push(grupo.join("\n"));
     }
   });
-
   return slides;
 }
 
@@ -118,6 +120,7 @@ function mostrarSlide() {
       momentoPreview.textContent = informacao.momento;
     }
   }
+  atualizarBarraMomentos();
 }
 
 previewTexto.textContent = slidesPreview[slideAtual];
@@ -531,12 +534,13 @@ function revisarApresentacaoCompleta() {
 
   informacoesSlidesPreview = [];
 
-  momentosAdicionados.forEach((item) => {
+  momentosAdicionados.forEach((item, indiceMomento) => {
     item.slides.forEach((slide) => {
       slidesPreview.push(slide);
 
       informacoesSlidesPreview.push({
         momento: item.momento,
+        indiceMomento: indiceMomento,
         preto: false,
       });
     });
@@ -547,6 +551,7 @@ function revisarApresentacaoCompleta() {
 
       informacoesSlidesPreview.push({
         momento: item.momento,
+        indiceMomento: indiceMomento,
         preto: true,
       });
     }
@@ -565,3 +570,35 @@ function revisarApresentacaoCompleta() {
 }
 
 botaoRevisar.addEventListener("click", revisarApresentacaoCompleta);
+
+function atualizarBarraMomentos() {
+  if (!modoRevisaoCompleta || !informacoesSlidesPreview[slideAtual]) {
+    barraMomentos.style.display = "none";
+    return;
+  }
+
+  barraMomentos.style.display = "flex";
+  barraMomentos.innerHTML = "";
+
+  const indiceAtual = informacoesSlidesPreview[slideAtual].indiceMomento;
+
+  momentosAdicionados.forEach((item, indice) => {
+    const elemento = document.createElement("span");
+
+    elemento.classList.add("item-barra-momento");
+
+    elemento.textContent = item.momento;
+
+    if (indice === indiceAtual) {
+      elemento.classList.add("ativo");
+      setTimeout(() => {
+        elemento.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "center",
+        });
+      }, 50);
+    }
+    barraMomentos.appendChild(elemento);
+  });
+}

@@ -6,10 +6,7 @@ from pptx.dml.color import RGBColor
 import re
 
 
-# ======================================================
 # DIVIDIR CONTEÚDO
-# ======================================================
-
 def dividir_blocos_automaticamente(texto):
 
     blocos_originais = re.split(
@@ -39,10 +36,7 @@ def dividir_blocos_automaticamente(texto):
     return slides
 
 
-# ======================================================
 # CRIAR SLIDE DE TEXTO
-# ======================================================
-
 def criar_slide_texto(
     apresentacao,
     texto
@@ -102,10 +96,7 @@ def criar_slide_texto(
         )
 
 
-# ======================================================
 # CRIAR SLIDE PRETO
-# ======================================================
-
 def criar_slide_preto(apresentacao):
 
     slide = apresentacao.slides.add_slide(
@@ -124,10 +115,7 @@ def criar_slide_preto(apresentacao):
     )
 
 
-# ======================================================
 # GERAR APRESENTAÇÃO COMPLETA
-# ======================================================
-
 def gerar_apresentacao_completa(
     momentos,
     adicionar_slide_preto,
@@ -175,4 +163,4 @@ def gerar_apresentacao_completa(
     # Salva o arquivo
     apresentacao.save(
         nome_arquivo
-    )
+    ) 

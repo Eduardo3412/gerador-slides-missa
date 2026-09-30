@@ -98,7 +98,7 @@ Use uma linha vazia para separar os blocos."
           id="cancelar-edicao"
           type="button"
           class="botao-cancelar"
-          style="display: none;"
+          style="display: none"
         >
           Cancelar edição
         </button>
@@ -106,20 +106,19 @@ Use uma linha vazia para separar os blocos."
         <!-- LADO DIREITO -->
 
         <div class="painel-preview">
-        
-<div class="cabecalho-preview">
+          <div class="cabecalho-preview">
+            <div>
+              <h2>Pré-visualização</h2>
 
-    <div>
+              <span id="momento-preview"> Conteúdo atual </span>
+            </div>
+          </div>
 
-        <h2>Pré-visualização</h2>
-
-        <span id="momento-preview">
-            Conteúdo atual
-        </span>
-
-    </div>
-
-</div>
+          <div
+            id="barra-momentos"
+            class="barra-momentos"
+            style="display: none"
+          ></div>
 
           <div id="preview-slide" class="preview-slide">
             <p id="preview-texto">Digite o conteúdo para visualizar</p>
@@ -164,9 +163,8 @@ Use uma linha vazia para separar os blocos."
 
       <!-- AÇÕES FINAIS -->
       <section class="acoes-finais">
-
         <button id="revisar" class="botao-revisar" type="button">
-        👁 Revisar apresentação completa
+          👁 Revisar apresentação completa
         </button>
 
         <button id="gerar" class="botao-gerar" type="button">
