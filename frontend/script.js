@@ -24,6 +24,7 @@ const campoSlidePreto = document.getElementById("slide-preto");
 const botaoCancelarEdicao = document.getElementById("cancelar-edicao");
 
 const barraMomentos = document.getElementById("barra-momentos");
+const miniaturasSlides = document.getElementById("miniaturas-slides");
 
 // Guarda todos os momentos adicionados à apresentação
 let momentosAdicionados = [];
@@ -76,10 +77,6 @@ function atualizarSlidesPreview() {
 
   momentoPreview.textContent = campoMomento.value;
 
-  campoMomento.addEventListener("change", function () {
-    momentoPreview.textContent = campoMomento.value;
-  });
-
   if (!letra) {
     slidesPreview = [];
     slideAtual = 0;
@@ -98,10 +95,16 @@ function atualizarSlidesPreview() {
 
 // MOSTRA O SLIDE ATUAL
 function mostrarSlide() {
+  botaoAnterior.disabled = slideAtual === 0 || slidesPreview.length === 0;
+  botaoProximo.disabled = slideAtual >= slidesPreview.length - 1;
+  atualizarMiniaturas();
+
   if (slidesPreview.length === 0) {
     previewTexto.textContent = "Digite o conteúdo para visualizar";
 
     contador.textContent = "0 / 0";
+    barraMomentos.style.display = "none";
+    momentoPreview.textContent = campoMomento.value;
 
     return;
   }
@@ -123,9 +126,58 @@ function mostrarSlide() {
   atualizarBarraMomentos();
 }
 
-previewTexto.textContent = slidesPreview[slideAtual];
+function atualizarMiniaturas() {
+  const indiceComFoco = Array.from(miniaturasSlides.children).indexOf(
+    document.activeElement,
+  );
+  miniaturasSlides.replaceChildren();
+  if (slidesPreview.length === 0) {
+    const mensagem = document.createElement("span");
+    mensagem.className = "miniaturas-vazias";
+    mensagem.textContent = "Seus slides aparecerão aqui";
+    miniaturasSlides.appendChild(mensagem);
+    return;
+  }
 
-contador.textContent = `${slideAtual + 1} / ${slidesPreview.length}`;
+  slidesPreview.forEach((texto, indice) => {
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "miniatura";
+    botao.classList.toggle("ativa", indice === slideAtual);
+    botao.setAttribute(
+      "aria-label",
+      `Ir para slide ${indice + 1}${texto === "" ? " (slide preto)" : ""}`,
+    );
+    botao.setAttribute(
+      "aria-current",
+      indice === slideAtual ? "true" : "false",
+    );
+    const tela = document.createElement("span");
+    tela.className = "miniatura-tela";
+    tela.setAttribute("aria-hidden", "true");
+    const conteudo = document.createElement("span");
+    conteudo.className = "miniatura-texto";
+    conteudo.textContent = texto;
+    tela.appendChild(conteudo);
+    const numero = document.createElement("span");
+    numero.textContent = indice + 1;
+    botao.append(tela, numero);
+    botao.addEventListener("click", () => {
+      slideAtual = indice;
+      mostrarSlide();
+    });
+    miniaturasSlides.appendChild(botao);
+  });
+
+  if (indiceComFoco >= 0) {
+    miniaturasSlides.children[indiceComFoco]?.focus({ preventScroll: true });
+  }
+  const ativa = miniaturasSlides.children[slideAtual];
+  miniaturasSlides.scrollLeft =
+    ativa.offsetLeft -
+    miniaturasSlides.offsetLeft -
+    (miniaturasSlides.clientWidth - ativa.offsetWidth) / 2;
+}
 
 // NAVEGAÇÃO DA PRÉ-VISUALIZAÇÃO
 botaoAnterior.addEventListener("click", function () {
@@ -146,6 +198,7 @@ botaoProximo.addEventListener("click", function () {
 
 // ATUALIZA PREVIEW ENQUANTO DIGITA
 campoLetra.addEventListener("input", atualizarSlidesPreview);
+campoMomento.addEventListener("change", atualizarSlidesPreview);
 
 // ADICIONAR MOMENTO À APRESENTAÇÃO
 botaoAdicionar.addEventListener("click", adicionarMomento);
@@ -227,15 +280,22 @@ function atualizarListaMomentos() {
     const elemento = document.createElement("div");
 
     elemento.className = "item-momento";
+    elemento.dataset.id = item.id;
 
     elemento.innerHTML = `
 
-    <div
+    <div class="linha-momento">
+    <button type="button" class="alca-momento"
+        aria-label="Reordenar momento ${indice + 1}. Arraste ou use as setas para cima e para baixo."
+        title="Arraste para reordenar ou use as setas do teclado">⠿</button>
+    <button type="button"
         class="cabecalho-momento"
+        aria-expanded="false"
+        aria-controls="conteudo-${item.id}"
         onclick="alternarMomento(${item.id})"
     >
 
-        <div class="titulo-momento">
+        <span class="titulo-momento">
 
             <span class="numero-momento">
                 ${String(indice + 1).padStart(2, "0")}
@@ -245,10 +305,10 @@ function atualizarListaMomentos() {
                 ${item.momento}
             </strong>
 
-        </div>
+        </span>
 
 
-        <div class="resumo-momento">
+        <span class="resumo-momento">
 
             <span>
                 ${item.slides.length}
@@ -262,8 +322,9 @@ function atualizarListaMomentos() {
                 ›
             </span>
 
-        </div>
+        </span>
 
+    </button>
     </div>
 
 
@@ -285,20 +346,6 @@ function atualizarListaMomentos() {
               onclick="visualizarMomento(${item.id})"
             >
               Visualizar
-            </button>
-
-            <button
-                type="button"
-                onclick="moverMomento(${item.id}, -1)"
-            >
-                ↑ Subir
-            </button>
-
-            <button
-                type="button"
-                onclick="moverMomento(${item.id}, 1)"
-            >
-                ↓ Descer
             </button>
 
             <button
@@ -332,6 +379,9 @@ function alternarMomento(id) {
   const seta = document.getElementById(`seta-${id}`);
 
   conteudo.classList.toggle("aberto");
+  conteudo.previousElementSibling
+    .querySelector(".cabecalho-momento")
+    .setAttribute("aria-expanded", conteudo.classList.contains("aberto"));
 
   seta.classList.toggle("aberta");
 }
@@ -350,31 +400,165 @@ function excluirMomento(id) {
   atualizarListaMomentos();
 }
 
-function moverMomento(id, direcao) {
-  const indiceAtual = momentosAdicionados.findIndex((item) => item.id === id);
+// A ordem visual também é a ordem usada na revisão e no PowerPoint.
+function confirmarOrdemMomentos() {
+  const ordemAnterior = [...momentosAdicionados];
+  const itens = [...listaMomentos.querySelectorAll(".item-momento")];
+  momentosAdicionados = itens.map((elemento) =>
+    ordemAnterior.find((item) => String(item.id) === elemento.dataset.id),
+  );
+  itens.forEach((elemento, indice) => {
+    elemento.querySelector(".numero-momento").textContent = String(
+      indice + 1,
+    ).padStart(2, "0");
+    elemento
+      .querySelector(".alca-momento")
+      .setAttribute(
+        "aria-label",
+        `Reordenar ${momentosAdicionados[indice].momento}, posição ${indice + 1}. Arraste ou use as setas para cima e para baixo.`,
+      );
+  });
 
-  if (indiceAtual === -1) {
-    return;
+  if (modoRevisaoCompleta && informacoesSlidesPreview.length) {
+    const atual = informacoesSlidesPreview[slideAtual];
+    const slides = informacoesSlidesPreview
+      .map((info, indice) => {
+        const momento = ordemAnterior[info.indiceMomento];
+        return {
+          texto: slidesPreview[indice],
+          info,
+          novoIndice: momentosAdicionados.indexOf(momento),
+        };
+      })
+      .sort((a, b) => a.novoIndice - b.novoIndice);
+    slidesPreview = slides.map((slide) => slide.texto);
+    informacoesSlidesPreview = slides.map((slide) => {
+      slide.info.indiceMomento = slide.novoIndice;
+      return slide.info;
+    });
+    slideAtual = Math.max(0, informacoesSlidesPreview.indexOf(atual));
+    mostrarSlide();
   }
-
-  const novoIndice = indiceAtual + direcao;
-
-  // Impede mover além dos limites
-  if (novoIndice < 0 || novoIndice >= momentosAdicionados.length) {
-    return;
-  }
-
-  // Guarda temporariamente o item
-  const item = momentosAdicionados[indiceAtual];
-
-  // Troca as posições
-  momentosAdicionados[indiceAtual] = momentosAdicionados[novoIndice];
-
-  momentosAdicionados[novoIndice] = item;
-
-  // Atualiza a tela
-  atualizarListaMomentos();
+  document.getElementById("status-ordem").textContent =
+    "Ordem da apresentação atualizada.";
 }
+
+let arrasteMomento = null;
+
+listaMomentos.addEventListener("pointerdown", (evento) => {
+  const alca = evento.target.closest(".alca-momento");
+  if (!alca || !evento.isPrimary || evento.button !== 0 || arrasteMomento)
+    return;
+  evento.preventDefault();
+  alca.focus({ preventScroll: true });
+  arrasteMomento = {
+    pointerId: evento.pointerId,
+    elemento: alca.closest(".item-momento"),
+    ordem: [...listaMomentos.children],
+    inicioY: evento.clientY,
+    y: evento.clientY,
+    fantasma: null,
+    frame: null,
+  };
+  listaMomentos.setPointerCapture(evento.pointerId);
+});
+
+function posicionarMomentoArrastado() {
+  const arraste = arrasteMomento;
+  if (!arraste?.fantasma) return;
+  arraste.fantasma.style.top = `${arraste.y - 24}px`;
+  const outros = [...listaMomentos.querySelectorAll(".item-momento")].filter(
+    (item) => item !== arraste.elemento,
+  );
+  const seguinte = outros.find((item) => {
+    const caixa = item.getBoundingClientRect();
+    return arraste.y < caixa.top + caixa.height / 2;
+  });
+  listaMomentos.insertBefore(arraste.elemento, seguinte || null);
+}
+
+function rolarDuranteArraste() {
+  if (!arrasteMomento?.fantasma) return;
+  const y = arrasteMomento.y;
+  const deslocamento = y < 70 ? -12 : y > window.innerHeight - 70 ? 12 : 0;
+  if (deslocamento) {
+    window.scrollBy(0, deslocamento);
+    posicionarMomentoArrastado();
+  }
+  arrasteMomento.frame = requestAnimationFrame(rolarDuranteArraste);
+}
+
+listaMomentos.addEventListener("pointermove", (evento) => {
+  const arraste = arrasteMomento;
+  if (!arraste || evento.pointerId !== arraste.pointerId) return;
+  arraste.y = evento.clientY;
+  if (!arraste.fantasma && Math.abs(arraste.y - arraste.inicioY) >= 6) {
+    const caixa = arraste.elemento.getBoundingClientRect();
+    const fantasma = document.createElement("div");
+    fantasma.className = "momento-arrastado";
+    fantasma.textContent = arraste.elemento
+      .querySelector(".titulo-momento")
+      .textContent.trim();
+    fantasma.setAttribute("aria-hidden", "true");
+    fantasma.style.left = `${caixa.left}px`;
+    fantasma.style.width = `${caixa.width}px`;
+    document.body.appendChild(fantasma);
+    arraste.fantasma = fantasma;
+    arraste.elemento.classList.add("em-arraste");
+    document.body.classList.add("reordenando");
+    rolarDuranteArraste();
+  }
+  posicionarMomentoArrastado();
+});
+
+function finalizarArrasteMomento(cancelado = false) {
+  const arraste = arrasteMomento;
+  if (!arraste) return;
+  arrasteMomento = null;
+  cancelAnimationFrame(arraste.frame);
+  arraste.fantasma?.remove();
+  arraste.elemento.classList.remove("em-arraste");
+  document.body.classList.remove("reordenando");
+  if (listaMomentos.hasPointerCapture(arraste.pointerId)) {
+    listaMomentos.releasePointerCapture(arraste.pointerId);
+  }
+  if (cancelado) listaMomentos.append(...arraste.ordem);
+  else if (arraste.fantasma) confirmarOrdemMomentos();
+  arraste.elemento
+    .querySelector(".alca-momento")
+    .focus({ preventScroll: true });
+}
+
+listaMomentos.addEventListener("pointerup", (evento) => {
+  if (evento.pointerId === arrasteMomento?.pointerId) finalizarArrasteMomento();
+});
+listaMomentos.addEventListener("pointercancel", () =>
+  finalizarArrasteMomento(true),
+);
+listaMomentos.addEventListener("lostpointercapture", () =>
+  finalizarArrasteMomento(true),
+);
+document.addEventListener("keydown", (evento) => {
+  if (evento.key === "Escape") finalizarArrasteMomento(true);
+});
+listaMomentos.addEventListener("keydown", (evento) => {
+  const alca = evento.target.closest(".alca-momento");
+  if (!alca || arrasteMomento || !["ArrowUp", "ArrowDown"].includes(evento.key))
+    return;
+  evento.preventDefault();
+  const item = alca.closest(".item-momento");
+  const vizinho =
+    evento.key === "ArrowUp"
+      ? item.previousElementSibling
+      : item.nextElementSibling;
+  if (!vizinho) return;
+  listaMomentos.insertBefore(
+    item,
+    evento.key === "ArrowUp" ? vizinho : vizinho.nextElementSibling,
+  );
+  confirmarOrdemMomentos();
+  alca.focus({ preventScroll: true });
+});
 
 // EDITAR MOMENTO
 
@@ -583,11 +767,16 @@ function atualizarBarraMomentos() {
   const indiceAtual = informacoesSlidesPreview[slideAtual].indiceMomento;
 
   momentosAdicionados.forEach((item, indice) => {
-    const elemento = document.createElement("span");
+    const elemento = document.createElement("button");
+    elemento.type = "button";
 
     elemento.classList.add("item-barra-momento");
 
     elemento.textContent = item.momento;
+
+    elemento.addEventListener("click", () => {
+      irParaMomento(indice);
+    });
 
     if (indice === indiceAtual) {
       elemento.classList.add("ativo");
@@ -602,3 +791,27 @@ function atualizarBarraMomentos() {
     barraMomentos.appendChild(elemento);
   });
 }
+
+function irParaMomento(indiceMomento) {
+  // funciona se estiver em modo de revisão completa
+  if (!modoRevisaoCompleta) {
+    return;
+  }
+
+  // procura o primeiro slide do momento desejado
+  const indiceSlide = informacoesSlidesPreview.findIndex(
+    (info) => info.indiceMomento === indiceMomento && info.preto === false,
+  );
+
+  // se não encontrar nenhum slide
+  if (indiceSlide === -1) {
+    return;
+  }
+
+  // ir para o slide do momento
+  slideAtual = indiceSlide;
+
+  mostrarSlide();
+}
+
+mostrarSlide();

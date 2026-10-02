@@ -11,127 +11,156 @@
   </head>
 
   <body>
+    <header class="cabecalho-site">
+      <div class="cabecalho-interno">
+        <div class="marca">
+          <svg
+            class="icone-igreja"
+            viewBox="0 0 32 40"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            aria-hidden="true"
+          >
+            <path d="M16 1v7m-3-4h6M10 15l6-7 6 7v8l7 5v10H3V28l7-5V15Z" />
+            <path d="M10 38V15h12v23M13 38V28a3 3 0 0 1 6 0v10M5 30h3m16 0h3" />
+            <circle cx="16" cy="20" r="2" />
+          </svg>
+          <h1>Gerador de Slides para Missa</h1>
+        </div>
+        <div class="perfil">
+          <span class="avatar" aria-hidden="true">A</span><span>Admin</span>
+        </div>
+      </div>
+    </header>
     <main class="container">
-      <!-- CABEÇALHO -->
+      <div class="editor-apresentacao">
+        <!-- NOME DA APRESENTAÇÃO -->
 
-      <header>
-        <h1>⛪ Gerador de Slides para Missa</h1>
+        <section class="configuracao-apresentacao">
+          <label for="nome-arquivo"> Nome da apresentação </label>
 
-        <p>
-          Monte os cantos, respostas e textos da celebração e gere uma única
-          apresentação.
-        </p>
-      </header>
+          <input
+            type="text"
+            id="nome-arquivo"
+            placeholder="Ex.: Missa Domingo 20-09-2026"
+          />
+        </section>
 
-      <!-- NOME DA APRESENTAÇÃO -->
+        <!-- ÁREA PRINCIPAL -->
 
-      <section class="configuracao-apresentacao">
-        <label for="nome-arquivo"> Nome da apresentação </label>
+        <div class="area-principal">
+          <!-- LADO ESQUERDO -->
 
-        <input
-          type="text"
-          id="nome-arquivo"
-          placeholder="Ex.: Missa Domingo 20-09-2026"
-        />
-      </section>
+          <div class="painel-formulario">
+            <section class="formulario">
+              <label for="momento"> Momento da Missa </label>
 
-      <!-- ÁREA PRINCIPAL -->
+              <select id="momento">
+                <option value="Entrada">Entrada</option>
 
-      <div class="area-principal">
-        <!-- LADO ESQUERDO -->
+                <option value="Ato Penitencial">Ato Penitencial</option>
 
-        <div class="painel-formulario">
-          <section class="formulario">
-            <label for="momento"> Momento da Missa </label>
+                <option value="Glória">Glória</option>
 
-            <select id="momento">
-              <option value="Entrada">Entrada</option>
+                <option value="Salmo">Salmo</option>
 
-              <option value="Ato Penitencial">Ato Penitencial</option>
+                <option value="Aclamação ao Evangelho">
+                  Aclamação ao Evangelho
+                </option>
 
-              <option value="Glória">Glória</option>
+                <option value="Preces">Preces</option>
 
-              <option value="Salmo">Salmo</option>
+                <option value="Ofertório">Ofertório</option>
 
-              <option value="Aclamação ao Evangelho">
-                Aclamação ao Evangelho
-              </option>
+                <option value="Oração Eucarística">Oração Eucarística</option>
 
-              <option value="Preces">Preces</option>
+                <option value="Santo">Santo</option>
 
-              <option value="Ofertório">Ofertório</option>
+                <option value="Cordeiro de Deus">Cordeiro de Deus</option>
 
-              <option value="Oração Eucarística">Oração Eucarística</option>
+                <option value="Comunhão">Comunhão</option>
 
-              <option value="Santo">Santo</option>
+                <option value="Final">Final</option>
+              </select>
+            </section>
 
-              <option value="Cordeiro de Deus">Cordeiro de Deus</option>
+            <!-- LETRA / RESPOSTAS -->
 
-              <option value="Comunhão">Comunhão</option>
+            <section class="formulario">
+              <label for="letra"> Letra / Respostas </label>
 
-              <option value="Final">Final</option>
-            </select>
-          </section>
-
-          <!-- LETRA / RESPOSTAS -->
-
-          <section class="formulario">
-            <label for="letra"> Letra / Respostas </label>
-
-            <textarea
-              id="letra"
-              rows="14"
-              placeholder="Digite ou cole aqui a letra ou as respostas...
+              <textarea
+                id="letra"
+                rows="7"
+                placeholder="Digite ou cole aqui a letra ou as respostas...
 
 Use uma linha vazia para separar os blocos."
-            ></textarea>
-          </section>
+              ></textarea>
+            </section>
 
-          <!-- ADICIONAR -->
+            <!-- ADICIONAR -->
 
-          <button id="adicionar" type="button">
-            + Adicionar à apresentação
-          </button>
-        </div>
+            <button id="adicionar" type="button">
+              + Adicionar à apresentação
+            </button>
+            <button
+              id="cancelar-edicao"
+              type="button"
+              class="botao-cancelar"
+              style="display: none"
+            >
+              Cancelar edição
+            </button>
+          </div>
 
-        <button
-          id="cancelar-edicao"
-          type="button"
-          class="botao-cancelar"
-          style="display: none"
-        >
-          Cancelar edição
-        </button>
+          <!-- LADO DIREITO -->
 
-        <!-- LADO DIREITO -->
+          <div class="painel-preview">
+            <div class="cabecalho-preview">
+              <div>
+                <h2>Pré-visualização</h2>
 
-        <div class="painel-preview">
-          <div class="cabecalho-preview">
-            <div>
-              <h2>Pré-visualização</h2>
-
-              <span id="momento-preview"> Conteúdo atual </span>
+                <span id="momento-preview"> Conteúdo atual </span>
+              </div>
             </div>
-          </div>
 
-          <div
-            id="barra-momentos"
-            class="barra-momentos"
-            style="display: none"
-          ></div>
+            <div
+              id="barra-momentos"
+              class="barra-momentos"
+              style="display: none"
+            ></div>
 
-          <div id="preview-slide" class="preview-slide">
-            <p id="preview-texto">Digite o conteúdo para visualizar</p>
-          </div>
+            <div id="preview-slide" class="preview-slide">
+              <p id="preview-texto">Digite o conteúdo para visualizar</p>
+            </div>
 
-          <!-- CONTROLES DO PREVIEW -->
+            <!-- CONTROLES DO PREVIEW -->
 
-          <div class="controles-preview">
-            <button id="anterior" class="botao-preview" type="button">◀</button>
-
-            <span id="contador"> 0 / 0 </span>
-
-            <button id="proximo" class="botao-preview" type="button">▶</button>
+            <div class="controles-preview">
+              <button
+                id="anterior"
+                class="botao-preview"
+                type="button"
+                aria-label="Slide anterior"
+              >
+                ‹
+              </button>
+              <div
+                id="miniaturas-slides"
+                class="miniaturas-slides"
+                aria-label="Slides da pré-visualização"
+              ></div>
+              <button
+                id="proximo"
+                class="botao-preview"
+                type="button"
+                aria-label="Próximo slide"
+              >
+                ›
+              </button>
+            </div>
+            <span id="contador" aria-live="polite">0 / 0</span>
           </div>
         </div>
       </div>
@@ -139,15 +168,22 @@ Use uma linha vazia para separar os blocos."
       <!-- ITENS DA APRESENTAÇÃO -->
 
       <section class="secao-itens">
-        <h2>Apresentação Atual</h2>
+        <div class="titulo-secao">
+          <h2>Apresentação Atual</h2>
+          <button id="revisar" class="botao-revisar" type="button">
+            Revisar apresentação
+          </button>
+        </div>
 
         <p class="descricao-secao">
           Os momentos adicionados aparecerão abaixo na ordem da apresentação.
+          Arraste a alça à esquerda de cada momento para mudar a ordem.
         </p>
 
         <div id="lista-momentos">
           <div class="lista-vazia">Nenhum momento adicionado ainda.</div>
         </div>
+        <p id="status-ordem" class="somente-leitor" role="status"></p>
       </section>
 
       <!-- CONFIGURAÇÕES -->
@@ -163,15 +199,12 @@ Use uma linha vazia para separar os blocos."
 
       <!-- AÇÕES FINAIS -->
       <section class="acoes-finais">
-        <button id="revisar" class="botao-revisar" type="button">
-          👁 Revisar apresentação completa
-        </button>
-
         <button id="gerar" class="botao-gerar" type="button">
           Gerar PowerPoint Completo
         </button>
       </section>
     </main>
+    <footer class="rodape-site">Gerador de Slides para Missa</footer>
 
     <script src="script.js"></script>
   </body>

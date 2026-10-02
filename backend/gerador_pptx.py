@@ -70,6 +70,7 @@ def criar_slide_texto(
     quadro = caixa.text_frame
 
     quadro.clear()
+    quadro.word_wrap = True
 
     quadro.vertical_anchor = MSO_ANCHOR.MIDDLE
 
