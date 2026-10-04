@@ -5,6 +5,10 @@ class UsuarioCadastro(BaseModel):
     email: EmailStr 
     senha: str = Field(min_length=8, max_length=100)
 
+class UsuarioLogin(BaseModel):
+    email: EmailStr
+    senha: str
+
 class UsuarioResposta(BaseModel):
     id: int
     nome: str
