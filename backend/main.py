@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
+from routers.usuarios import router as usuarios_router
 
 from gerador_pptx import gerar_apresentacao_completa
 
@@ -12,10 +13,7 @@ import unicodedata
 
 app = FastAPI()
 
-
-# ======================================================
-# CORS
-# ======================================================
+app.include_router(usuarios_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,11 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-# ======================================================
-# MODELOS DOS DADOS
-# ======================================================
 
 class Momento(BaseModel):
     momento: str
@@ -41,10 +34,7 @@ class Apresentacao(BaseModel):
     momentos: list[Momento]
 
 
-# ======================================================
 # TRATAMENTO DO NOME DO ARQUIVO
-# ======================================================
-
 def criar_nome_arquivo(nome):
 
     # Remove acentos
