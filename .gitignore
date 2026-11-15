@@ -17,3 +17,6 @@ venv/
 
 # PowerPoint gerados
 slides_gerados/
+# Frontend (React/Vite)
+node_modules/
+frontend/dist/
