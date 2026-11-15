@@ -2,210 +2,22 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>Gerador de Slides para Missa</title>
-
-    <link rel="stylesheet" href="style.css" />
+    <title>Slides para Missa</title>
+    <!-- Aplica o tema salvo antes do React carregar (evita piscar o tema errado). -->
+    <script>
+      try {
+        var tema = localStorage.getItem("tema");
+        if (tema) document.documentElement.dataset.theme = tema;
+      } catch (e) {}
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   </head>
 
   <body>
-    <header class="cabecalho-site">
-      <div class="cabecalho-interno">
-        <div class="marca">
-          <svg
-            class="icone-igreja"
-            viewBox="0 0 32 40"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.6"
-            aria-hidden="true"
-          >
-            <path d="M16 1v7m-3-4h6M10 15l6-7 6 7v8l7 5v10H3V28l7-5V15Z" />
-            <path d="M10 38V15h12v23M13 38V28a3 3 0 0 1 6 0v10M5 30h3m16 0h3" />
-            <circle cx="16" cy="20" r="2" />
-          </svg>
-          <h1>Gerador de Slides para Missa</h1>
-        </div>
-        <div class="perfil">
-          <span class="avatar" aria-hidden="true">A</span><span>Admin</span>
-        </div>
-      </div>
-    </header>
-    <main class="container">
-      <div class="editor-apresentacao">
-        <!-- NOME DA APRESENTAÇÃO -->
-
-        <section class="configuracao-apresentacao">
-          <label for="nome-arquivo"> Nome da apresentação </label>
-
-          <input
-            type="text"
-            id="nome-arquivo"
-            placeholder="Ex.: Missa Domingo 20-09-2026"
-          />
-        </section>
-
-        <!-- ÁREA PRINCIPAL -->
-
-        <div class="area-principal">
-          <!-- LADO ESQUERDO -->
-
-          <div class="painel-formulario">
-            <section class="formulario">
-              <label for="momento"> Momento da Missa </label>
-
-              <select id="momento">
-                <option value="Entrada">Entrada</option>
-
-                <option value="Ato Penitencial">Ato Penitencial</option>
-
-                <option value="Glória">Glória</option>
-
-                <option value="Salmo">Salmo</option>
-
-                <option value="Aclamação ao Evangelho">
-                  Aclamação ao Evangelho
-                </option>
-
-                <option value="Preces">Preces</option>
-
-                <option value="Ofertório">Ofertório</option>
-
-                <option value="Oração Eucarística">Oração Eucarística</option>
-
-                <option value="Santo">Santo</option>
-
-                <option value="Cordeiro de Deus">Cordeiro de Deus</option>
-
-                <option value="Comunhão">Comunhão</option>
-
-                <option value="Final">Final</option>
-              </select>
-            </section>
-
-            <!-- LETRA / RESPOSTAS -->
-
-            <section class="formulario">
-              <label for="letra"> Letra / Respostas </label>
-
-              <textarea
-                id="letra"
-                rows="7"
-                placeholder="Digite ou cole aqui a letra ou as respostas...
-
-Use uma linha vazia para separar os blocos."
-              ></textarea>
-            </section>
-
-            <!-- ADICIONAR -->
-
-            <button id="adicionar" type="button">
-              + Adicionar à apresentação
-            </button>
-            <button
-              id="cancelar-edicao"
-              type="button"
-              class="botao-cancelar"
-              style="display: none"
-            >
-              Cancelar edição
-            </button>
-          </div>
-
-          <!-- LADO DIREITO -->
-
-          <div class="painel-preview">
-            <div class="cabecalho-preview">
-              <div>
-                <h2>Pré-visualização</h2>
-
-                <span id="momento-preview"> Conteúdo atual </span>
-              </div>
-            </div>
-
-            <div
-              id="barra-momentos"
-              class="barra-momentos"
-              style="display: none"
-            ></div>
-
-            <div id="preview-slide" class="preview-slide">
-              <p id="preview-texto">Digite o conteúdo para visualizar</p>
-            </div>
-
-            <!-- CONTROLES DO PREVIEW -->
-
-            <div class="controles-preview">
-              <button
-                id="anterior"
-                class="botao-preview"
-                type="button"
-                aria-label="Slide anterior"
-              >
-                ‹
-              </button>
-              <div
-                id="miniaturas-slides"
-                class="miniaturas-slides"
-                aria-label="Slides da pré-visualização"
-              ></div>
-              <button
-                id="proximo"
-                class="botao-preview"
-                type="button"
-                aria-label="Próximo slide"
-              >
-                ›
-              </button>
-            </div>
-            <span id="contador" aria-live="polite">0 / 0</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ITENS DA APRESENTAÇÃO -->
-
-      <section class="secao-itens">
-        <div class="titulo-secao">
-          <h2>Apresentação Atual</h2>
-          <button id="revisar" class="botao-revisar" type="button">
-            Revisar apresentação
-          </button>
-        </div>
-
-        <p class="descricao-secao">
-          Os momentos adicionados aparecerão abaixo na ordem da apresentação.
-          Arraste a alça à esquerda de cada momento para mudar a ordem.
-        </p>
-
-        <div id="lista-momentos">
-          <div class="lista-vazia">Nenhum momento adicionado ainda.</div>
-        </div>
-        <p id="status-ordem" class="somente-leitor" role="status"></p>
-      </section>
-
-      <!-- CONFIGURAÇÕES -->
-
-      <section class="configuracoes">
-        <h2>Configurações</h2>
-
-        <label class="opcao-checkbox">
-          <input type="checkbox" id="slide-preto" checked />
-          Adicionar slide preto após cada item
-        </label>
-      </section>
-
-      <!-- AÇÕES FINAIS -->
-      <section class="acoes-finais">
-        <button id="gerar" class="botao-gerar" type="button">
-          Gerar PowerPoint Completo
-        </button>
-      </section>
-    </main>
-    <footer class="rodape-site">Gerador de Slides para Missa</footer>
-
-    <script src="script.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
